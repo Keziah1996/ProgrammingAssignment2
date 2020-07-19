@@ -1,30 +1,31 @@
-## This file contains two functions. One creates a 3 by 3 matrix and assigns its inverse tocache
-## The second function tries to retrieve the value and return it
+## This file contains two functions. One creates a special matrix object 
+## The second function retrieves the inverse value and return it
 
-## Function 1 below creates a 3 by 3 matrix, calculates its inverse and caches it
-
+## The function creates a special "matrix" object that can cache its inverse
 makeCacheMatrix <- function(x = matrix()) {
-        x=matrix(c(7,6,5,8,0,9,3,2,1),nrow=3,ncol=3)
-  y<<-x
-    makeCacheMatrix<-function(y)
-    makeCacheMatrix=solve(y)  
-    makeCacheMatrix<<-makeCacheMatrix(y)
-    makeCacheMatrix
-
+  I <- NULL
+  set <- function(y) {
+     x <<- y
+     I <<- NULL
+  }
+  get <- function() x
+  setInverse <- function(Inverse) I <<- Inverse
+  getInverse <- function() I
+  list(set = set, get = get,
+       setInverse = setInverse,
+       getInverse = getInverse)
 }
-
-## Function 2 retrieves the cached inverse if the matrix is unchanged and calculates the new inverse if 
-##the value retrieved is null
+## This function computes the inverse of the special "matrix" returned by makeCacheMatrix above
+## by either retrieving from cache or calculating it
 cacheSolve <- function(x, ...) {
-        cacheSolve<-function(y)
-    s<-y$makeCacheMatrix
-     if(!is.null(s)){
-      print("Fetching cached data")
-      return(s)
-    } else {
-      data<-y
-      s=solve(y)
-      return(s)
-    }
+   I <- x$getInverse()
+   if(!is.null(I)) {
+     message("Getting cached data")
+    return(I)
+   }
+   data <- x$get()
+   I <- solve(data, ...)
+   x$setInverse(I)
+   I
         ## Return a matrix that is the inverse of 'x'
 }
